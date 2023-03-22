@@ -1,13 +1,23 @@
 const Mirum = () => {
   const ANIMATION_DURATION = 2000;
   const messageElements = ".mirum-imessage, .left-speech-bubble, .mirum-typing";
+  let hasSkipped = false;
   return {
     init: () => {
       $(messageElements).addClass(
         "mirum-transition-all mirum-max-height mirum-hide"
       );
+      $(".mirum-skip-btn").click(() => {
+        hasSkipped = true;
+        $(".mirum-input-field").addClass("mirum-hide");
+        $(messageElements).removeClass("mirum-hide");
+        $(".mirum-typing").addClass("mirum-hide");
+      });
     },
     startAnim: () => {
+      if (hasSkipped) {
+        return false;
+      }
       $(".mirum-input-field").addClass("mirum-hide");
 
       //Add a staggered delay to each element
@@ -16,6 +26,9 @@ const Mirum = () => {
         .each((index, element) => {
           let animationDelay = index * ANIMATION_DURATION;
           setTimeout(() => {
+            if (hasSkipped) {
+              return;
+            }
             $(element).removeClass("mirum-hide");
             $(element).addClass("animate__animated animate__fadeInUp");
 
